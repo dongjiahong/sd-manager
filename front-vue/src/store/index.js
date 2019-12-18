@@ -51,6 +51,13 @@ export default new Vuex.Store({
       } else {
         console.log("===> getMachinesWithState unknown state: ", info);
       }
+    },
+    getEditMachines: state => machine_no => {
+      return state.machines.filter(
+        m =>
+          (m.machine_time_left > 0 && m.account_id === "") ||
+          m.machine_no == machine_no
+      );
     }
   },
   mutations: {
@@ -355,7 +362,7 @@ export default new Vuex.Store({
         }
       });
     },
-    editAccount({dispatch, state }, payload) {
+    editAccount({ dispatch, state }, payload) {
       let item = payload.data;
       // 首先判断是否修改了机器
       if (item.machine_id == "") {
@@ -388,10 +395,11 @@ export default new Vuex.Store({
         }
       }
       // 处理代理
-      for (let index in state.accounts) {
-        if (item.agent_name == state.accounts[index].agent_name) {
-          if (item.agent_id != state.accounts[index].id) {
-            item.dst_agent_id = state.accounts[index].agent_id;
+      for (let index in state.agents) {
+        if (item.agent_name == state.agents[index].agent_name) {
+          if (item.agent_id != state.agents[index].id) {
+            item.dst_agent_id = state.agents[index].id;
+            break;
           }
         }
       }

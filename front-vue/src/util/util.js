@@ -6,7 +6,7 @@ export default {
     }
     let eDate = Date.parse(endDate.replace(/-/g, "/"));
     let curDate = new Date();
-    let diff = eDate - curDate;
+    let diff = eDate - curDate + 24 * 3600 * 1000; // 结束的当天也算时间，这里要加1
 
     if (diff > 0) {
       return Math.floor(diff / (24 * 3600 * 1000)).toString();

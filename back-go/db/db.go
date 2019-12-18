@@ -450,12 +450,18 @@ func EditAccount(ma ModifyAccount, dbFile string) error {
 		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
 			return err
 		}
-	}
-	// 处理代理
-	if ma.AgentId != ma.DstAgentId {
-		ma.AgentId = ma.DstAgentId
+	default: // 如果只是修改了时间
 		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
 			return err
+		}
+	}
+	// 处理代理
+	if len(ma.DstAgentId) > 0 { // 代理不能为空
+		if ma.AgentId != ma.DstAgentId {
+			ma.AgentId = ma.DstAgentId
+			if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

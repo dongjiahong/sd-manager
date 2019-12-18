@@ -28,7 +28,7 @@
         </FormItem>
         <FormItem label="代理" prop="agent_name" :rules="{ required: true }">
           <Select
-            :value="editAccountFormValidate.agent_name"
+            v-model="editAccountFormValidate.agent_name"
             placeholder="请选择代理"
           >
             <Option
@@ -41,13 +41,13 @@
         </FormItem>
         <FormItem label="服务器">
           <Select
-            :value="editAccountFormValidate.machine_no"
+            v-model="editAccountFormValidate.machine_no"
             placeholder="选择服务器"
             clearable
             style="width: 250px"
           >
             <Option
-              v-for="m in getMachinesWithState('useful')"
+              v-for="m in getEditMachines(accountDetail.machine_no)"
               :value="m.machine_no"
               :key="m.machine_no"
               >{{ m.machine_no }}</Option
@@ -112,7 +112,7 @@ export default {
   },
   computed: {
     ...mapState(["agents"]),
-    ...mapGetters(["getMachinesWithState"])
+    ...mapGetters(["getEditMachines"])
   },
   methods: {
     ...mapActions(["editAccount"]),
@@ -146,7 +146,7 @@ export default {
     },
     accountDetail: function(newVal) {
       // 由于是动态传参，初始化时accountdetail是没有值得，这里监控变化
-      this.editAccountFormValidate = newVal;
+      this.editAccountFormValidate = util.deepCopy(newVal);
     }
   }
 };
