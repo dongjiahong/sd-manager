@@ -86,9 +86,6 @@
           </Sider>
           <!-- 属性里有冒号表示后面是表达式，没有表示为字面量 -->
           <Layout :style="{ padding: '0 24px 24px' }">
-            <h2 :style="{ background: 'pink' }">
-              红色表示该账号或者机器到期了
-            </h2>
             <Content
               :style="{ padding: '24px', background: '#fff', height: '100%' }"
             >

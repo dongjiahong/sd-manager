@@ -422,6 +422,7 @@ func EditAccount(ma ModifyAccount, dbFile string) error {
 	// 账户信息
 	switch ma.Ext {
 	case "add": // 添加了机器
+		ma.MachineId = ma.DstMachineId
 		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
 			return err
 		}

@@ -377,7 +377,7 @@ export default new Vuex.Store({
           }
         }
       } else {
-        if (item.machine_no == "") {
+        if (item.machine_no == "" || item.machine_no == undefined) {
           // 释放
           item.ext = "release";
         } else {

@@ -1,6 +1,6 @@
 <template>
   <div class="load">
-    <h1 class="title">刷单账户管理系统</h1>
+    <h1 class="title">远程科技管理系统</h1>
     <div class="from">
       <Form ref="loadForm" :model="loadData" :label-width="80">
         <FormItem
@@ -52,8 +52,8 @@ export default {
   data() {
     return {
       loadData: {
-        user: "dongshuai",
-        password: "1234565"
+        user: "",
+        password: ""
       }
     };
   },
@@ -77,8 +77,8 @@ export default {
 
 <style lang="scss" scoped>
 .load {
-  height: 400px;
-  width: 400px;
+  height: 420px;
+  width: 420px;
   margin: 100px auto;
   border: 2px solid #555;
   border-radius: 10px;
