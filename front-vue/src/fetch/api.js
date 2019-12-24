@@ -45,6 +45,6 @@ export default {
   // 登录
   load(user, pwd) {
     let token = window.btoa(user + "::" + pwd);
-    return async("/api/fake/load?token=" + token);
+    return async("/api/load?token=" + token);
   }
 };

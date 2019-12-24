@@ -31,64 +31,42 @@
             <Menu theme="light" width="auto" :open-names="['1']">
               <Submenu name="1">
                 <template slot="title">
-                  <Icon type="ios-navigate"></Icon>
-                  账户信息
+                  <Icon type="ios-navigate"></Icon>账户信息
                 </template>
                 <MenuItem name="1-1" to="/home/accounts/all">所有账户</MenuItem>
-                <MenuItem name="1-2" to="/home/accounts/used"
-                  >使用中的账户</MenuItem
-                >
-                <MenuItem name="1-3" to="/home/accounts/unuse"
-                  >闲置账户</MenuItem
-                >
+                <MenuItem name="1-2" to="/home/accounts/used">使用中的账户</MenuItem>
+                <MenuItem name="1-3" to="/home/accounts/unuse">闲置账户</MenuItem>
               </Submenu>
               <Submenu name="2">
                 <template slot="title">
-                  <Icon type="ios-analytics"></Icon>
-                  代理人
+                  <Icon type="ios-analytics"></Icon>代理人
                 </template>
                 <MenuItem
                   v-for="a in agents"
                   v-bind:key="a.id"
                   :name="a.agent_name"
                   :to="'/home/agents/' + a.agent_name"
-                  >{{ a.agent_name }}</MenuItem
-                >
+                >{{ a.agent_name }}</MenuItem>
               </Submenu>
               <Submenu name="3">
                 <template slot="title">
-                  <Icon type="ios-analytics"></Icon>
-                  机器管理
+                  <Icon type="ios-analytics"></Icon>机器管理
                 </template>
-                <MenuItem name="3-1" to="/home/machines/formal"
-                  >有效的机器</MenuItem
-                >
-                <MenuItem name="3-2" to="/home/machines/useful"
-                  >有效未用的机器</MenuItem
-                >
-                <MenuItem name="3-3" to="/home/machines/expose"
-                  >过期的机器</MenuItem
-                >
+                <MenuItem name="3-1" to="/home/machines/formal">有效的机器</MenuItem>
+                <MenuItem name="3-2" to="/home/machines/useful">有效未用的机器</MenuItem>
+                <MenuItem name="3-3" to="/home/machines/expose">过期的机器</MenuItem>
               </Submenu>
               <Submenu name="4">
                 <template slot="title">
-                  <Icon type="md-medkit"></Icon>
-                  备份数据
+                  <Icon type="md-medkit"></Icon>备份数据
                 </template>
-                <MenuItem
-                  v-for="b in backups"
-                  v-bind:key="b"
-                  :name="b"
-                  >{{ b }}</MenuItem
-                >
+                <MenuItem v-for="b in backups" v-bind:key="b" :name="b">{{ b }}</MenuItem>
               </Submenu>
             </Menu>
           </Sider>
           <!-- 属性里有冒号表示后面是表达式，没有表示为字面量 -->
           <Layout :style="{ padding: '0 24px 24px' }">
-            <Content
-              :style="{ padding: '24px', background: '#fff', height: '100%' }"
-            >
+            <Content :style="{ padding: '24px', background: '#fff', height: '100%' }">
               <!-- <Account /> -->
               <router-view />
             </Content>
@@ -141,10 +119,10 @@ export default {
       this.showAddMachine = true;
     },
     backup() {
-      this.backupFile(this)
+      this.backupFile(this);
     },
     fetchAllInfo: function() {
-      this.initAllInfo(this)
+      this.initAllInfo(this);
       api.getBackupFiles().then(data => {
         console.log("======> 获取备份文件目录: ", data);
         if (data.message === "ok") {
@@ -171,7 +149,7 @@ export default {
     position: relative;
     height: 100%;
     border-radius: 4px;
-    overflow:  scroll;
+    overflow: scroll;
   }
   .layout-logo {
     float: left;

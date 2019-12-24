@@ -278,13 +278,21 @@ export default new Vuex.Store({
     //   // TODO 请求后台
     //   commit('addAgent', item);
     // }
-    initAllInfo(context, me) {
+    changeLoad(context, load) {
+      console.log("=======>   context: ", context)
+      context.commit("changeLoad", load)
+    },
+    initAllInfo({commit}, me) {
+      // if (state.keepAlive == false) {
+      //   me.$router.push({name: 'load'});
+      //   return
+      // }
       api.getAllInfo().then(data => {
         console.log("=====> 初始化的信息数据: ", data);
         if (data.message == "ok") {
-          context.commit("initAgents", data.data.agents);
-          context.commit("initMachines", data.data.machines);
-          context.commit("initAccounts", data.data.accounts);
+          commit("initAgents", data.data.agents);
+          commit("initMachines", data.data.machines);
+          commit("initAccounts", data.data.accounts);
         } else {
           me.$Notice.error({
             title: "初始化数据失败",
@@ -293,12 +301,17 @@ export default new Vuex.Store({
         }
       });
     },
-    addAgent(context, payload) {
+    addAgent({commit, state}, payload) {
+      if (state.keepAlive == false) {
+        payload.me.$Message.error("请先登录再操作")
+        payload.me.$router.push({name: 'load'});
+        return
+      }
       let item = payload.data;
       api.addAgent(item).then(data => {
         console.log("====> add agent: ", data);
         if (data.message == "ok") {
-          context.commit("addAgent", data.data);
+          commit("addAgent", data.data);
         } else {
           payload.me.$Notice.error({
             title: "添加代理失败",

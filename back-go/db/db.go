@@ -71,9 +71,9 @@ func QueryUsers(dbFile string) ([]Agent, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("select * from agent")
+	rows, err := db.Query("select * from agents")
 	if err != nil {
-		log.Println("[QueryUsers] query agent table: ", err)
+		log.Println("[QueryUsers] query agents table: ", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -97,7 +97,7 @@ func QueryUserWithName(name, password, dbFile string) string {
 	}
 	defer db.Close()
 
-	rows, err := db.Query(fmt.Sprintf("select * from agent where account='%s';", name))
+	rows, err := db.Query(fmt.Sprintf("select * from agents where agentaccount='%s';", name))
 	if err != nil {
 		log.Println("[QueryUserWithName] open db file: ", err)
 		return err.Error()
@@ -108,7 +108,7 @@ func QueryUserWithName(name, password, dbFile string) string {
 		var a Agent
 		rows.Scan(&a.AgentId, &a.AgentName, &a.AgentAccount, &a.AgentPassword)
 
-		if a.AgentName == name && a.AgentPassword == password {
+		if a.AgentAccount == name && a.AgentPassword == password {
 			return "ok"
 		}
 	}
