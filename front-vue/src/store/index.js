@@ -10,7 +10,6 @@ export default new Vuex.Store({
   state: {
     keepAlive: false, // 是否登录
     accounts: [],
-    agents: [],
     machines: [],
     backups: []
   },
@@ -32,9 +31,6 @@ export default new Vuex.Store({
     },
     getAccountsWithName: state => name => {
       return state.accounts.filter(a => a.agent_name === name);
-    },
-    getAgentsWithName: state => name => {
-      return state.agents.filter(a => a.agent_name === name);
     },
     // 获取机器信息
     getMachinesWithState: state => info => {
@@ -82,17 +78,6 @@ export default new Vuex.Store({
               return;
           }
         }
-      }
-    },
-    initAgents(state, items) {
-      for (let index in items) {
-        let newValue = {
-          id: items[index].id,
-          agent_name: items[index].agent_name,
-          agent_account: items[index].agent_account,
-          agent_password: items[index].agent_password
-        };
-        Vue.set(state.agents, index, newValue);
       }
     },
     initMachines(state, items) {
@@ -153,16 +138,6 @@ export default new Vuex.Store({
       for (let index in items) {
         Vue.set(state.backups, index, items[index]);
       }
-    },
-    // 增加代理
-    addAgent(state, item) {
-      let newValue = {
-        id: item.id,
-        agent_name: item.agent_name,
-        agent_account: item.agent_account,
-        agent_password: item.agent_password
-      };
-      Vue.set(state.agents, state.agents.length, newValue);
     },
     addMachine(state, item) {
       console.log("=======>  addMachine item: ", item);
@@ -290,31 +265,11 @@ export default new Vuex.Store({
       api.getAllInfo().then(data => {
         console.log("=====> 初始化的信息数据: ", data);
         if (data.message == "ok") {
-          commit("initAgents", data.data.agents);
           commit("initMachines", data.data.machines);
           commit("initAccounts", data.data.accounts);
         } else {
           me.$Notice.error({
             title: "初始化数据失败",
-            desc: data.message
-          });
-        }
-      });
-    },
-    addAgent({commit, state}, payload) {
-      if (state.keepAlive == false) {
-        payload.me.$Message.error("请先登录再操作")
-        payload.me.$router.push({name: 'load'});
-        return
-      }
-      let item = payload.data;
-      api.addAgent(item).then(data => {
-        console.log("====> add agent: ", data);
-        if (data.message == "ok") {
-          commit("addAgent", data.data);
-        } else {
-          payload.me.$Notice.error({
-            title: "添加代理失败",
             desc: data.message
           });
         }

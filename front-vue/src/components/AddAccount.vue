@@ -25,15 +25,37 @@
             placeholder="输入账户代号"
           ></i-input>
         </FormItem>
-        <FormItem label="选择代理" prop="agent_id" :rules="{ required: true }">
-          <Select
-            v-model="accountFormValidate.agent_id"
-            placeholder="选择账户的代理"
-          >
-            <Option v-for="a in agents" :value="a.id" :key="a.agent_name">{{
-              a.agent_name
-            }}</Option>
-          </Select>
+        <FormItem
+          label="账户邮箱"
+          prop="account_mail"
+          :rules="{
+            required: true,
+            message: '账户邮箱, 如：1234555@gmail.com',
+            trigger: 'blur'
+          }"
+        >
+          <i-input
+            v-model="accountFormValidate.account_mail"
+            placeholder="输入账户邮箱"
+          ></i-input>
+        </FormItem>
+        <FormItem label="账户密码" prop="account_password">
+          <i-input
+            v-model="accountFormValidate.account_password"
+            placeholder="输入账户密码"
+          ></i-input>
+        </FormItem>
+        <FormItem label="验证邮箱" prop="verify_mail">
+          <i-input
+            v-model="accountFormValidate.verify_mail"
+            placeholder="输入验证邮箱"
+          ></i-input>
+        </FormItem>
+        <FormItem label="代理人">
+          <i-input
+            v-model="accountFormValidate.agent_name"
+            placeholder="输入代理名字"
+          ></i-input>
         </FormItem>
         <FormItem label="代理时间" prop="agent_date">
           <DatePicker
@@ -63,6 +85,12 @@
             >
           </Select>
         </FormItem>
+        <FormItem label="输入备注">
+          <i-input
+            v-model="accountFormValidate.tip"
+            placeholder="输入备注"
+          ></i-input>
+        </FormItem>
       </Form>
     </Modal>
   </div>
@@ -81,10 +109,13 @@ export default {
       loading: true,
       accountFormValidate: {
         account_no: "", // 账户代号
+        account_mail: "", // 账户邮箱
+        account_password: "", // 账户密码
+        verify_mail: "", // 验证邮箱
         agent_id: "", // 账户代理
         agent_date: "", // 代理时间
         end_date: "", // 代理的截止日期
-        machine_id: "" // 机器
+        machine_no: "" // 机器
       }
     };
   },
@@ -114,7 +145,7 @@ export default {
       this.show = false;
 
       this.$refs[name].resetFields();
-    },
+    }
   },
   watch: {
     showModal: function() {

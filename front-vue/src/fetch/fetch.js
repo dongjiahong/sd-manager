@@ -5,6 +5,11 @@ axios.defaults.timeout = 5000
 
 // add a request interceptor
 axios.interceptors.request.use((config)=>{
+  // 在请求的头部加入验证信息
+  let au = localStorage.getItem('Authorization')
+  if (au) {
+    config.headers.Authorization = au
+  }
   return config
 },(error) => {
   return Promise.reject(error);
@@ -22,6 +27,7 @@ axios.interceptors.response.use((response) => {
 
 export default async (url = '', params = {}, method = 'get') => {
   method = method.toLowerCase()
+
   if (method === 'get') {
     let paramArr = [] 
     for (let [key, value] of Object.entries(params)) {

@@ -27,6 +27,7 @@ export default {
     return result;
   },
   formatDate(date) {
+    // 2019-01-02 12:03:32
     if (date == "") {
       return "";
     }

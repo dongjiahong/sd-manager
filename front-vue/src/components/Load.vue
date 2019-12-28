@@ -13,7 +13,11 @@
             trigger: 'blur'
           }"
         >
-          <i-input type="text" v-model="loadData.user" placeholder="请输入用户名"></i-input>
+          <i-input
+            type="text"
+            v-model="loadData.user"
+            placeholder="请输入用户名"
+          ></i-input>
         </FormItem>
         <FormItem
           label="密码"
@@ -25,7 +29,11 @@
             trigger: 'blur'
           }"
         >
-          <i-input type="password" v-model="loadData.password" placeholder="请输入密码"></i-input>
+          <i-input
+            type="password"
+            v-model="loadData.password"
+            placeholder="请输入密码"
+          ></i-input>
         </FormItem>
       </Form>
     </div>
@@ -38,7 +46,6 @@
 
 <script>
 import api from "@/fetch/api";
-import { mapActions } from "vuex";
 
 export default {
   name: "Load",
@@ -51,18 +58,21 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["changeLoad"]),
     loadOK() {
       if (this.loadData.user.length == 0 || this.loadData.password == 0) {
         this.$Message.error("检查你的账户或密码");
         return;
       }
       api.load(this.loadData.user, this.loadData.password).then(data => {
-        if (data.status === "ok") {
-          this.changeLoad(true);
+        if (data.message === "ok") {
+          localStorage.setItem("Authorization", this.loadData.user);
+          let authDate = new Date();
+          localStorage.setItem("AuthDate", authDate);
           this.$router.push("/home");
         } else {
-          console.log("==> load info: ", data.msg, " status: ", data.status);
+          console.log("==> load info: ", data);
+          localStorage.setItem("Authorization", "");
+          localStorage.setItem("AuthDate", "");
           this.$Message.warning({
             content: "登录失败请检查你的用户名和密码",
             duration: 2

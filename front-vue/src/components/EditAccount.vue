@@ -11,33 +11,41 @@
         :model="editAccountFormValidate"
         :label-width="80"
       >
-        <FormItem
-          label="账户代号"
-          prop="account_no"
-          :rules="{
-            required: true,
-            message: '账户代号, 如：a101',
-            trigger: 'blur'
-          }"
-        >
+        <FormItem label="账户代号">
           <i-input
             v-model="editAccountFormValidate.account_no"
             placeholder="输入账户代号"
             readonly
           ></i-input>
         </FormItem>
-        <FormItem label="代理" prop="agent_name" :rules="{ required: true }">
-          <Select
+        <FormItem label="账户邮箱">
+          <i-input
+            v-model="editAccountFormValidate.account_mail"
+            placeholder="输入账户邮箱"
+            readonly
+          ></i-input>
+        </FormItem>
+        <FormItem label="账户密码">
+          <i-input
+            v-model="editAccountFormValidate.account_password"
+            placeholder="输入账户密码"
+          ></i-input>
+        </FormItem>
+        <FormItem label="验证邮箱">
+          <i-input
+            v-model="editAccountFormValidate.verify_mail"
+            placeholder="输入验证邮箱"
+          ></i-input>
+        </FormItem>
+        <FormItem
+          label="代理人"
+          prop="agent_name"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
+          <i-input
             v-model="editAccountFormValidate.agent_name"
-            placeholder="请选择代理"
-          >
-            <Option
-              v-for="a in agents"
-              :value="a.agent_name"
-              :key="a.agent_name"
-              >{{ a.agent_name }}</Option
-            >
-          </Select>
+            placeholder="输入代理人名称"
+          ></i-input>
         </FormItem>
         <FormItem label="服务器">
           <Select
@@ -83,6 +91,12 @@
             v-model="editAccountFormValidate.time_left"
             placeholder="输入该账号的使用时间"
             readonly
+          ></i-input>
+        </FormItem>
+        <FormItem label="备注信息">
+          <i-input
+            v-model="editAccountFormValidate.tip"
+            placeholder="输入备注"
           ></i-input>
         </FormItem>
       </Form>

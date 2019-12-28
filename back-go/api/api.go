@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"log"
 	"path/filepath"
 	"regexp"
@@ -43,57 +42,39 @@ func (r *Resp) toJson() []byte {
 	return b
 }
 
+func ManagerCheckMiddleware(c *gin.Context) {
+	// TODO
+	au := c.GetHeader("Authorization")
+	if len(au) == 0 {
+	}
+}
+
 func Load(c *gin.Context) {
 
 	token := c.Query("token")
 	var user, pwd string
 
-	log.Println("======> token: ", token)
-
 	if info, err := base64.StdEncoding.DecodeString(token); err != nil {
-		c.JSON(200, gin.H{
-			"status": "decode err: " + err.Error(),
-			"msg":    token,
-		})
+		log.Println("[Load] decode token err: ", err)
+		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
 		return
 	} else {
 		if ss := strings.Split(string(info), "::"); len(ss) != 2 {
-			c.JSON(200, gin.H{
-				"status": "decode err: " + err.Error(),
-				"msg":    token,
-			})
+			log.Println("[Load] split wrong token:  ", token)
+			c.Data(200, "application/json", newResp("split token err", nil).toJson())
 			return
 		} else {
 			user, pwd = ss[0], ss[1]
 		}
 	}
 
-	m := db.QueryUserWithName(user, pwd, dataPath+dataFile)
+	m, err := db.QueryUserWithName(user, pwd, dataPath+dataFile)
 
-	c.JSON(200, gin.H{
-		"status": m,
-		"msg":    fmt.Sprintf("user: %s, pwd: %s", user, pwd),
-	})
-	return
-}
-
-// 拉取所有的代理
-func GetAllAgents(c *gin.Context) {}
-
-// 添加代理
-func AddAgent(c *gin.Context) {
-	var agent db.Agent
-	if err := c.ShouldBindJSON(&agent); err != nil {
-		log.Println("[AddAgent] decode json err: ", err.Error(), " req: ", *c.Request)
+	if err != nil {
 		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
 		return
 	}
-	if res, err := db.AddAgent(agent, dataPath+dataFile); err != nil {
-		log.Println("[AddAgent] inert to db err: ", err)
-		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
-	} else {
-		c.Data(200, "application/json", newResp("ok", res).toJson())
-	}
+	c.Data(200, "application/json", newResp(m, nil).toJson())
 	return
 }
 
@@ -130,9 +111,6 @@ func AddAccount(c *gin.Context) {
 	}
 	return
 }
-
-// 拉取所有的账户
-func GetAllAccounts(c *gin.Context) {}
 
 // 删除账户
 func DelAccount(c *gin.Context) {

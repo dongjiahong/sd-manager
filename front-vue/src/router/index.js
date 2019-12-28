@@ -10,7 +10,7 @@ import Machine from "@/components/Machine";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: "/",
@@ -31,7 +31,7 @@ export default new Router({
           component: Agent
         },
         {
-          path:"machines/:state",
+          path: "machines/:state",
           component: Machine
         }
       ]
@@ -43,3 +43,33 @@ export default new Router({
     }
   ]
 });
+// 使用router.beforeEach 注册全局前置守卫，判断是否登录
+router.beforeEach((to, from, next) => {
+  if (to.path === "/") {
+    next();
+  } else {
+    let token = localStorage.getItem("Authorization");
+    let authDate = localStorage.getItem("AuthDate");
+    if (
+      token === "null" ||
+      token === "" ||
+      token === undefined ||
+      authDate === "" ||
+      authDate === undefined
+    ) {
+      next("/");
+    } else {
+      // 获取上次的认证时间
+      let begin = new Date(authDate);
+      let end = new Date();
+      let diff = end.getTime() - begin.getTime();
+      if (Math.floor(diff / (3600 * 1000)) > 24) {
+        // 相差24小时以上
+        next("/");
+      } else {
+        next();
+      }
+    }
+  }
+});
+export default router;

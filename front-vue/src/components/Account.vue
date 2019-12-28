@@ -2,6 +2,7 @@
   <div class="account">
     <Table
       border
+      size="small"
       :highlight-row="true"
       :columns="account_label"
       :data="getAccountsWithState($route.params.state)"
@@ -20,16 +21,16 @@
         <Button type="error" size="small" @click="remove(row)">删除</Button>
       </template>
     </Table>
-      <EditAccount
-        :showModal.sync="showEditAccount"
-        :accountDetail="activeRow"
-      ></EditAccount>
+    <EditAccount
+      :showModal.sync="showEditAccount"
+      :accountDetail="activeRow"
+    ></EditAccount>
   </div>
 </template>
 
 <script>
 import EditAccount from "@/components/EditAccount";
-import util from "@/util/util"
+import util from "@/util/util";
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
@@ -44,15 +45,21 @@ export default {
       account_label: [
         {
           title: "账号代号",
+          width: 90,
+          fixed: 'left',
           slot: "account_no"
         },
         {
-          title: "账户id",
-          key: "id"
+          title: "账户邮箱",
+          key: "account_mail"
         },
         {
-          title: "代理人",
-          key: "agent_name"
+          title: "账户密码",
+          key: "account_password"
+        },
+        {
+          title: "验证邮箱",
+          key: "verify_mail"
         },
         {
           title: "机器代号",
@@ -67,11 +74,6 @@ export default {
           key: "machine_password"
         },
         {
-          title: "账户创建时间",
-          key: "create_date",
-          sortable: true
-        },
-        {
           title: "账户授权日期",
           key: "agent_date",
           sortable: true
@@ -82,14 +84,20 @@ export default {
           sortable: true
         },
         {
-          title: "授权剩余时间(天)",
+          title: "剩余(天)",
           key: "time_left",
+          width: 80,
           sortable: true
+        },
+        {
+          title: "备注",
+          key: "tips"
         },
         {
           title: "Action",
           slot: "action",
-          width: 150,
+          width: 130,
+          fixed: 'right',
           align: "center"
         }
       ]
