@@ -39,13 +39,21 @@
             placeholder="输入账户邮箱"
           ></i-input>
         </FormItem>
-        <FormItem label="账户密码" prop="account_password">
+        <FormItem
+          label="账户密码"
+          prop="account_password"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="accountFormValidate.account_password"
             placeholder="输入账户密码"
           ></i-input>
         </FormItem>
-        <FormItem label="验证邮箱" prop="verify_mail">
+        <FormItem
+          label="验证邮箱"
+          prop="verify_mail"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="accountFormValidate.verify_mail"
             placeholder="输入验证邮箱"
@@ -71,15 +79,15 @@
             v-model="accountFormValidate.end_date"
           ></DatePicker>
         </FormItem>
-        <FormItem label="选择机器" prop="machine_id">
+        <FormItem label="选择机器" prop="machine_no">
           <Select
-            v-model="accountFormValidate.machine_id"
+            v-model="accountFormValidate.machine_no"
             placeholder="选择机器"
             clearable
           >
             <Option
               v-for="m in getMachinesWithState('useful')"
-              :value="m.id"
+              :value="m.machine_no"
               :key="m.machine_no"
               >{{ m.machine_no }}</Option
             >
@@ -112,10 +120,11 @@ export default {
         account_mail: "", // 账户邮箱
         account_password: "", // 账户密码
         verify_mail: "", // 验证邮箱
-        agent_id: "", // 账户代理
+        agent_name: "", // 账户代理
         agent_date: "", // 代理时间
         end_date: "", // 代理的截止日期
-        machine_no: "" // 机器
+        machine_no: "", // 机器
+        tip: "" // 备注
       }
     };
   },
@@ -134,10 +143,14 @@ export default {
             me: this,
             data: {
               account_no: this.accountFormValidate.account_no,
-              agent_id: this.accountFormValidate.agent_id,
+              account_mail: this.accountFormValidate.account_mail,
+              account_password: this.accountFormValidate.account_password,
+              verify_mail: this.accountFormValidate.verify_mail,
+              agent_name: this.accountFormValidate.agent_name,
               agent_date: this.accountFormValidate.agent_date,
               end_date: this.accountFormValidate.end_date,
-              machine_id: this.accountFormValidate.machine_id
+              machine_no: this.accountFormValidate.machine_no,
+              tip: this.accountFormValidate.tip
             }
           });
         }

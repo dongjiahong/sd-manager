@@ -8,16 +8,11 @@ Vue.use(Vuex);
 // vuex实例
 export default new Vuex.Store({
   state: {
-    keepAlive: false, // 是否登录
     accounts: [],
     machines: [],
     backups: []
   },
   getters: {
-    // 获取登录状态
-    isLoad: state => {
-      return state.keepAlive;
-    },
     getAccountsWithState: state => info => {
       if (info === "all") {
         return state.accounts;
@@ -42,7 +37,7 @@ export default new Vuex.Store({
         return state.machines.filter(m => m.machine_time_left <= 0);
       } else if (info === "useful") {
         return state.machines.filter(
-          m => m.machine_time_left > 0 && m.account_id === ""
+          m => m.machine_time_left > 0 && m.account_no === ""
         );
       } else {
         console.log("===> getMachinesWithState unknown state: ", info);
@@ -51,35 +46,12 @@ export default new Vuex.Store({
     getEditMachines: state => machine_no => {
       return state.machines.filter(
         m =>
-          (m.machine_time_left > 0 && m.account_id === "") ||
+          (m.machine_time_left > 0 && m.account_no === "") ||
           m.machine_no == machine_no
       );
     }
   },
   mutations: {
-    // 修改是否登录状态
-    changeLoad(state, load) {
-      state.keepAlive = load;
-    },
-    // 修改账户信息
-    changeAccount(state, payload) {
-      for (let index in state.accounts) {
-        if (state.accounts[index].account_id === payload.item.account_id) {
-          switch (payload.operate) {
-            case "del": // 删除数据
-              state.accounts.splice(index, 1);
-              return;
-            case "ch": // 修改数据
-              if (state.accounts[index].end_date != payload.item.end_date) {
-                // 修改的内容是时间
-                // TODO 时间的加减
-              }
-              state.accounts[index] = payload.item;
-              return;
-          }
-        }
-      }
-    },
     initMachines(state, items) {
       for (let index in items) {
         let newValue = {
@@ -89,7 +61,7 @@ export default new Vuex.Store({
           machine_password: items[index].machine_password,
           machine_create_date: items[index].machine_create_date,
           machine_end_date: items[index].machine_end_date,
-          account_id: items[index].account_id,
+          account_no: items[index].account_no,
           machine_time_left: util.dateDifference(items[index].machine_end_date)
         };
         Vue.set(state.machines, index, newValue);
@@ -97,18 +69,10 @@ export default new Vuex.Store({
     },
     initAccounts(state, items) {
       for (let index in items) {
-        let agent_name = "";
-        let machine_no = "";
         let machine_ip = "";
         let machine_password = "";
-        for (let i in state.agents) {
-          if (state.agents[i].id == items[index].agent_id) {
-            agent_name = state.agents[i].agent_name;
-          }
-        }
         for (let i in state.machines) {
-          if (state.machines[i].id == items[index].machine_id) {
-            machine_no = state.machines[i].machine_no;
+          if (state.machines[i].machine_no == items[index].machine_no) {
             machine_ip = state.machines[i].machine_ip;
             machine_password = state.machines[i].machine_password;
           }
@@ -120,16 +84,18 @@ export default new Vuex.Store({
         let newValue = {
           id: items[index].id,
           account_no: items[index].account_no,
+          account_mail: items[index].account_mail,
+          account_password: items[index].account_password,
+          verify_mail: items[index].verify_mail,
           create_date: items[index].create_date,
+          agent_name: items[index].agent_name,
           agent_date: items[index].agent_date,
           end_date: items[index].end_date,
-          agent_id: items[index].agent_id,
-          agent_name: agent_name,
-          machine_id: items[index].machine_id,
-          machine_no: machine_no,
+          machine_no: items[index].machine_no,
           machine_ip: machine_ip,
           machine_password: machine_password,
-          time_left: util.dateDifference(items[index].end_date)
+          time_left: util.dateDifference(items[index].end_date),
+          tip: items[index].tip
         };
         Vue.set(state.accounts, index, newValue);
       }
@@ -154,39 +120,32 @@ export default new Vuex.Store({
     },
     // 增加账户
     addAccount(state, item) {
-      let agent_name = "";
-      let machine_no = "";
+      console.log("=======>  addAccount item: ", item);
       let machine_ip = "";
       let machine_password = "";
-      for (let i in state.agents) {
-        // 获取代理名称
-        if (state.agents[i].id == item.agent_id) {
-          agent_name = state.agents[i].agent_name;
-          break;
-        }
-      }
       for (let i in state.machines) {
-        if (state.machines[i].id == item.machine_id) {
+        if (state.machines[i].machine_no == item.machine_no) {
           // 获取机器信息
-          machine_no = state.machines[i].machine_no;
           machine_ip = state.machines[i].machine_ip;
           machine_password = state.machines[i].machine_password;
-          state.machines[i].account_id = item.id;
+          state.machines[i].account_no = item.account_no;
           break;
         }
       }
       let newValue = {
         id: item.id,
         account_no: item.account_no,
+        account_mail: item.account_mail,
+        account_password: item.account_password,
+        verify_mail: item.verify_mail,
         create_date: item.create_date,
         agent_date: item.agent_date,
+        agent_name: item.agent_name,
         end_date: item.end_date,
-        agent_id: item.agent_id,
-        agent_name: agent_name,
-        machine_id: item.machine_id,
-        machine_no: machine_no,
+        machine_no: item.machine_no,
         machine_ip: machine_ip,
         machine_password: machine_password,
+        tip: item.tip,
         time_left: util.dateDifference(item.end_date)
       };
       Vue.set(state.accounts, state.accounts.length, newValue);
@@ -200,13 +159,14 @@ export default new Vuex.Store({
           break;
         }
       }
-      if (item.machine_id != "") {
+      console.log("====> delAccount item:", item)
+      if (item.machine_no != "") {
         for (let index in state.machines) {
-          if (item.machine_id == state.machines[index].id) {
+          if (item.machine_no == state.machines[index].machine_no) {
             let copyMachine = util.deepCopy(state.machines[index]);
-            copyMachine.account_id = "";
-            // state.machines[index] = copyMachine;
+            copyMachine.account_no = "";
             Vue.set(state.machines, index, copyMachine);
+            console.log("====> delAccount copy ok")
             break;
           }
         }
@@ -230,6 +190,7 @@ export default new Vuex.Store({
     // },
     // 修改机器
     editMachine(state, item) {
+      console.log("=====> editMachine item: ",item)
       for (let index in state.machines) {
         if (item.id == state.machines[index].id) {
           let newValue = {
@@ -253,15 +214,7 @@ export default new Vuex.Store({
     //   // TODO 请求后台
     //   commit('addAgent', item);
     // }
-    changeLoad(context, load) {
-      console.log("=======>   context: ", context)
-      context.commit("changeLoad", load)
-    },
-    initAllInfo({commit}, me) {
-      // if (state.keepAlive == false) {
-      //   me.$router.push({name: 'load'});
-      //   return
-      // }
+    initAllInfo({ commit }, me) {
       api.getAllInfo().then(data => {
         console.log("=====> 初始化的信息数据: ", data);
         if (data.message == "ok") {
@@ -330,47 +283,8 @@ export default new Vuex.Store({
         }
       });
     },
-    editAccount({ dispatch, state }, payload) {
+    editAccount({ dispatch }, payload) {
       let item = payload.data;
-      // 首先判断是否修改了机器
-      if (item.machine_id == "") {
-        if (item.machine_no != "") {
-          // 添加
-          for (let index in state.machines) {
-            if (item.machine_no == state.machines[index].machine_no) {
-              item.dst_machine_id = state.machines[index].id;
-              item.ext = "add";
-              break;
-            }
-          }
-        }
-      } else {
-        if (item.machine_no == "" || item.machine_no == undefined) {
-          // 释放
-          item.ext = "release";
-        } else {
-          for (let index in state.machines) {
-            if (item.machine_no == state.machines[index].machine_no) {
-              if (item.machine_id != state.machines[index].id) {
-                // 变更
-                item.ext = "modify";
-                // 这里不规范，使用no来保存需要变更的目标id
-                item.dst_machine_id = state.machines[index].id;
-                break;
-              }
-            }
-          }
-        }
-      }
-      // 处理代理
-      for (let index in state.agents) {
-        if (item.agent_name == state.agents[index].agent_name) {
-          if (item.agent_id != state.agents[index].id) {
-            item.dst_agent_id = state.agents[index].id;
-            break;
-          }
-        }
-      }
       api.editAccount(item).then(data => {
         console.log("======> edit account: ", data);
         if (data.message === "ok") {

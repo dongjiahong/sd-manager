@@ -11,37 +11,48 @@
         :model="editAccountFormValidate"
         :label-width="80"
       >
-        <FormItem label="账户代号">
+        <FormItem
+          label="账户代号"
+          prop="account_no"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="editAccountFormValidate.account_no"
             placeholder="输入账户代号"
             readonly
           ></i-input>
         </FormItem>
-        <FormItem label="账户邮箱">
+        <FormItem
+          label="账户邮箱"
+          prop="account_mail"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="editAccountFormValidate.account_mail"
             placeholder="输入账户邮箱"
-            readonly
           ></i-input>
         </FormItem>
-        <FormItem label="账户密码">
+        <FormItem
+          label="账户密码"
+          prop="account_password"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="editAccountFormValidate.account_password"
             placeholder="输入账户密码"
           ></i-input>
         </FormItem>
-        <FormItem label="验证邮箱">
+        <FormItem
+          label="验证邮箱"
+          prop="verify_mail"
+          :rules="{ required: true, trigger: 'blur' }"
+        >
           <i-input
             v-model="editAccountFormValidate.verify_mail"
             placeholder="输入验证邮箱"
           ></i-input>
         </FormItem>
-        <FormItem
-          label="代理人"
-          prop="agent_name"
-          :rules="{ required: true, trigger: 'blur' }"
-        >
+        <FormItem label="代理人" prop="agent_name">
           <i-input
             v-model="editAccountFormValidate.agent_name"
             placeholder="输入代理人名称"

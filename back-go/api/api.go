@@ -131,13 +131,13 @@ func DelAccount(c *gin.Context) {
 
 // 更新账户
 func EditAccount(c *gin.Context) {
-	var ma db.ModifyAccount
-	if err := c.ShouldBindJSON(&ma); err != nil {
+	var a db.Account
+	if err := c.ShouldBindJSON(&a); err != nil {
 		log.Println("[EditAccount] decode json err: ", err.Error(), " req: ", *c.Request)
 		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
 		return
 	}
-	if err := db.EditAccount(ma, dataPath+dataFile); err != nil {
+	if _, err := db.UpdateAccount(a, dataPath+dataFile); err != nil {
 		log.Println("[EditAccount] update to db err: ", err)
 		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
 	} else {
@@ -163,9 +163,6 @@ func EditMachine(c *gin.Context) {
 	return
 }
 
-// 拉取所有的机器
-func GetAllMachines(c *gin.Context) {}
-
 // 删除机器
 func DelMachine(c *gin.Context) {
 	var m db.Machine
@@ -175,7 +172,7 @@ func DelMachine(c *gin.Context) {
 		return
 	}
 	if res, err := db.DelMachine(m, dataPath+dataFile); err != nil {
-		log.Println("[DelAccount] inert to db err: ", err)
+		log.Println("[DelAccount] delete to db err: ", err)
 		c.Data(200, "application/json", newResp(err.Error(), nil).toJson())
 	} else {
 		c.Data(200, "application/json", newResp("ok", res).toJson())

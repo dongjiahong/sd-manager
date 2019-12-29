@@ -5,7 +5,6 @@ import Home from "@/components/Home";
 import Load from "@/components/Load";
 import Backup from "@/components/Backup";
 import Account from "@/components/Account";
-import Agent from "@/components/Agent";
 import Machine from "@/components/Machine";
 
 Vue.use(Router);
@@ -25,10 +24,6 @@ const router = new Router({
         {
           path: "accounts/:state",
           component: Account
-        },
-        {
-          path: "agents/:name",
-          component: Agent
         },
         {
           path: "machines/:state",

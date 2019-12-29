@@ -30,12 +30,14 @@
 
 <script>
 import EditAccount from "@/components/EditAccount";
+import ExpandRow from "@/components/AccountTableExpand";
 import util from "@/util/util";
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Account",
   components: {
+    // ExpandRow,
     EditAccount
   },
   data() {
@@ -44,25 +46,25 @@ export default {
       activeRow: {},
       account_label: [
         {
+          type: "expand",
+          width: 50,
+          render: (h, params) => {
+            return h(ExpandRow, {
+              props: {
+                row: params.row
+              }
+            });
+          }
+        },
+        {
           title: "账号代号",
-          width: 90,
-          fixed: 'left',
+          width: 110,
+          sortable: true,
           slot: "account_no"
         },
         {
-          title: "账户邮箱",
-          key: "account_mail"
-        },
-        {
-          title: "账户密码",
-          key: "account_password"
-        },
-        {
-          title: "验证邮箱",
-          key: "verify_mail"
-        },
-        {
           title: "机器代号",
+          sortable: true,
           key: "machine_no"
         },
         {
@@ -74,30 +76,30 @@ export default {
           key: "machine_password"
         },
         {
-          title: "账户授权日期",
-          key: "agent_date",
-          sortable: true
+          title: "代理人",
+          key: "agent_name"
         },
         {
           title: "账户到期时间",
           key: "end_date",
+          width: 130,
           sortable: true
         },
         {
           title: "剩余(天)",
           key: "time_left",
-          width: 80,
+          width: 100,
           sortable: true
         },
         {
           title: "备注",
-          key: "tips"
+          key: "tip"
         },
         {
           title: "Action",
           slot: "action",
           width: 130,
-          fixed: 'right',
+          fixed: "right",
           align: "center"
         }
       ]

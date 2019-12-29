@@ -39,14 +39,6 @@ type Account struct {
 	Tip       string `json:"tip"`        // 备注
 }
 
-// 修改账户结构体
-type ModifyAccount struct {
-	Account
-	DstMachineId string `json:"dst_machine_id"`
-	DstAgentId   string `json:"dst_agent_id"`
-	Ext          string `json:"ext"` // 保留字段用来添加额外信息
-}
-
 // 代理信息
 type Manager struct {
 	Id              string `json:"id"`               // 代理的id -- 自增长
@@ -76,7 +68,7 @@ func QueryUserWithName(name, password, dbFile string) (string, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("select * from managers;")
+	rows, err := db.Query(fmt.Sprintf("select * from managers where manageraccount='%s';", name))
 	if err != nil {
 		log.Println("[QueryUserWithName] open db file: ", err)
 		return "", err
@@ -218,50 +210,41 @@ func QueryAllInfo(dbFile string) (*AllInfo, error) {
 }
 
 func DelAccount(a Account, dbFile string) (*Account, error) {
-	//	db, err := sql.Open("sqlite3", dbFile)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	defer db.Close()
-	//
-	//	if len(a.MachineId) > 0 { // 这个账户绑定了机器
-	//		sqlStr := fmt.Sprintf("update machines set accountid='' where machineid=%s;", a.MachineId)
-	//		if _, err := db.Exec(sqlStr); err != nil {
-	//			return nil, err
-	//		}
-	//	}
-	//
-	//	sqlStr := fmt.Sprintf("delete from accounts where accountid=%s;", a.AccountId)
-	//
-	//	if res, err := db.Exec(sqlStr); err != nil {
-	//		return nil, err
-	//	} else {
-	//		num, _ := res.RowsAffected()
-	//		if num != 1 {
-	//			log.Println("[DelAccount] 删除账户的语句：", sqlStr, " 受影响的数量: ", num)
-	//		}
-	//	}
-	//
-	//	return &a, nil
-	return nil, nil
+	db, err := sql.Open("sqlite3", dbFile)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	sqlStr := fmt.Sprintf("delete from accounts where accountno='%s';", a.AccountNo)
+
+	if res, err := db.Exec(sqlStr); err != nil {
+		return nil, err
+	} else {
+		num, _ := res.RowsAffected()
+		if num != 1 {
+			log.Println("[DelAccount] 删除账户的语句：", sqlStr, " 受影响的数量: ", num)
+		}
+	}
+
+	return &a, nil
 }
 
-//func UpdateAccount(a Account, dbFile string) (*Account, error) {
-//	db, err := sql.Open("sqlite3", dbFile)
-//	if err != nil {
-//		return nil, err
-//	}
-//	defer db.Close()
-//
-//	sqlStr := fmt.Sprintf("update accounts set agentdate='%s', enddate='%s', agentid='%s', machineid='%s' where accountid=%s;",
-//		a.AgentDate, a.EndDate, a.AgentId, a.MachineId, a.AccountId)
-//
-//	if _, err := db.Exec(sqlStr); err != nil {
-//		return nil, errors.New(" update account err: " + err.Error() + " sql: " + sqlStr)
-//	}
-//	return &a, nil
-//}
-//
+func UpdateAccount(a Account, dbFile string) (*Account, error) {
+	db, err := sql.Open("sqlite3", dbFile)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	sqlStr := fmt.Sprintf("update accounts set accountmail='%s', accountpassword='%s', verifymail='%s', agentdate='%s', enddate='%s', agentname='%s', machineno='%s', tip='%s' where id=%s;", a.AccountMail, a.AccountPassword, a.VerifyMail, a.AgentDate, a.EndDate, a.AgentName, a.MachineNo, a.Tip, a.Id)
+
+	if _, err := db.Exec(sqlStr); err != nil {
+		return nil, errors.New(" update account err: " + err.Error() + " sql: " + sqlStr)
+	}
+	return &a, nil
+}
+
 func UpdateMachineAccountNo(mNo, aNo, dbFile string) error {
 	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
@@ -269,7 +252,7 @@ func UpdateMachineAccountNo(mNo, aNo, dbFile string) error {
 	}
 	defer db.Close()
 
-	sqlStr := fmt.Sprintf("update  machines set accountno='%s' where machineno=%s;", aNo, mNo)
+	sqlStr := fmt.Sprintf("update  machines set accountno='%s' where machineno='%s';", aNo, mNo)
 
 	if _, err := db.Exec(sqlStr); err != nil {
 		return errors.New(" update machineAccountid err: " + err.Error() + " sql: " + sqlStr)
@@ -278,126 +261,47 @@ func UpdateMachineAccountNo(mNo, aNo, dbFile string) error {
 }
 
 func UpdateMachine(m Machine, dbFile string) (*Machine, error) {
-	//	db, err := sql.Open("sqlite3", dbFile)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	defer db.Close()
-	//
-	//	sqlStr := fmt.Sprintf("update  machines set machineip='%s', machinepassword='%s', machineenddate='%s' where machineid=%s;",
-	//		m.MachineIP, m.MachinePassword, m.MachineEndDate, m.MachineId)
-	//
-	//	if _, err := db.Exec(sqlStr); err != nil {
-	//		return nil, errors.New(" update machine err: " + err.Error() + " sql: " + sqlStr)
-	//	}
-	//	return &m, nil
-	//}
-	//
-	//func DelAgent(a Agent, dbFile string) (*Agent, error) {
-	//	db, err := sql.Open("sqlite3", dbFile)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	defer db.Close()
-	//
-	//	sqlStr := fmt.Sprintf("delete from agents where agentid=%s;", a.AgentId)
-	//
-	//	if res, err := db.Exec(sqlStr); err != nil {
-	//		return nil, err
-	//	} else {
-	//		num, _ := res.RowsAffected()
-	//		if num != 1 {
-	//			return nil, errors.New("删除代理数据库受影响的原因")
-	//		}
-	//	}
-	//
-	//	sqlStr = fmt.Sprintf("update accounts set agentid='' where agentid=%s;", a.AgentId)
-	//	if _, err := db.Exec(sqlStr); err != nil {
-	//		return nil, err
-	//	}
-	//
-	//	return &a, err
-	return nil, nil
+	db, err := sql.Open("sqlite3", dbFile)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	sqlStr := fmt.Sprintf("update  machines set machineip='%s', machinepassword='%s', machineenddate='%s' where id=%s;",
+		m.MachineIP, m.MachinePassword, m.MachineEndDate, m.MachineId)
+
+	if _, err := db.Exec(sqlStr); err != nil {
+		return nil, errors.New(" update machine err: " + err.Error() + " sql: " + sqlStr)
+	}
+	return &m, nil
 }
 
 func DelMachine(m Machine, dbFile string) (*Machine, error) {
-	//	db, err := sql.Open("sqlite3", dbFile)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	defer db.Close()
-	//
-	//	if len(m.AccountId) > 0 { // 这台机器绑定了账户
-	//		sqlStr := fmt.Sprintf("update accounts set machineid='' where accountid=%s;", m.AccountId)
-	//		if _, err := db.Exec(sqlStr); err != nil {
-	//			return nil, err
-	//		}
-	//	}
-	//
-	//	sqlStr := fmt.Sprintf("delete from machines where machineid=%s;", m.MachineId)
-	//
-	//	if res, err := db.Exec(sqlStr); err != nil {
-	//		return nil, err
-	//	} else {
-	//		num, _ := res.RowsAffected()
-	//		if num != 1 {
-	//			return nil, errors.New("删除账户数据库受影响的原因")
-	//		}
-	//	}
-	//
-	//	return &m, err
-	return nil, nil
-}
+	db, err := sql.Open("sqlite3", dbFile)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
 
-func EditAccount(ma ModifyAccount, dbFile string) error {
-	//	log.Printf("==========> ma: %+v", ma)
-	//	// 账户信息
-	//	switch ma.Ext {
-	//	case "add": // 添加了机器
-	//		ma.MachineId = ma.DstMachineId
-	//		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
-	//			return err
-	//		}
-	//		if err := UpdateMachineAccountId(ma.DstMachineId, ma.AccountId, dbFile); err != nil {
-	//			return err
-	//		}
-	//	case "release": // 释放了机器
-	//		if err := UpdateMachineAccountId(ma.MachineId, "", dbFile); err != nil {
-	//			return err
-	//		}
-	//		ma.MachineId = ""
-	//		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
-	//			return err
-	//		}
-	//	case "modify": // 修改了机器
-	//		// 原机器释放绑定
-	//		if err := UpdateMachineAccountId(ma.MachineId, "", dbFile); err != nil {
-	//			return err
-	//		}
-	//		// 新机器绑定
-	//		if err := UpdateMachineAccountId(ma.DstMachineId, ma.AccountId, dbFile); err != nil {
-	//			return err
-	//		}
-	//		// 更改账户绑定的机器
-	//		ma.MachineId = ma.DstMachineId
-	//		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
-	//			return err
-	//		}
-	//	default: // 如果只是修改了时间
-	//		if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
-	//			return err
-	//		}
-	//	}
-	//	// 处理代理
-	//	if len(ma.DstAgentId) > 0 { // 代理不能为空
-	//		if ma.AgentId != ma.DstAgentId {
-	//			ma.AgentId = ma.DstAgentId
-	//			if _, err := UpdateAccount(ma.Account, dbFile); err != nil {
-	//				return err
-	//			}
-	//		}
-	//	}
-	return nil
+	if len(m.AccountNo) > 0 { // 这台机器绑定了账户
+		sqlStr := fmt.Sprintf("update accounts set machineno='' where accountno=%s;", m.AccountNo)
+		if _, err := db.Exec(sqlStr); err != nil {
+			return nil, err
+		}
+	}
+
+	sqlStr := fmt.Sprintf("delete from machines where id=%s;", m.MachineId)
+
+	if res, err := db.Exec(sqlStr); err != nil {
+		return nil, err
+	} else {
+		num, _ := res.RowsAffected()
+		if num != 1 {
+			return nil, errors.New("删除账户数据库受影响的原因")
+		}
+	}
+
+	return &m, err
 }
 
 func Backup(dbFile string) (string, error) {

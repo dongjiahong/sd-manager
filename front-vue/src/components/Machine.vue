@@ -42,11 +42,12 @@ export default {
       machine_label: [
         {
           title: "机器代号",
+          sortable: true,
           slot: "machine_no"
         },
         {
-          title: "绑定账户id",
-          key: "account_id"
+          title: "绑定账户",
+          key: "account_no"
         },
         {
           title: "机器ip",
@@ -91,10 +92,10 @@ export default {
       this.activeMachine =  util.deepCopy(row)
     },
     remove(item){
-      if (item.account_id != '' && item.account_id != null) {
+      if (item.account_no != '' && item.account_no != null) {
         this.$Notice.info({
           title: "删除警告",
-          desc: "请先解除该机器上的账户, 绑定的账户id: "+item.account_id
+          desc: "请先解除该机器上的账户: "+item.account_no
         })
         return
       }
