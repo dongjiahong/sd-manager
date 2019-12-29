@@ -6,7 +6,8 @@
           <Menu mode="horizontal" theme="dark" active-name="1">
             <div class="layout-logo">
               <MenuItem name="4">
-                <Button type="success" @click="backup">备份数据</Button>
+                <Input search enter-button="Search" placeholder="Enter something..." />
+                <!-- <Button type="success" @click="backup">搜索</Button> -->
               </MenuItem>
             </div>
             <div class="layout-nav">
@@ -15,6 +16,9 @@
               </MenuItem>
               <MenuItem name="2">
                 <Button type="primary" @click="addMachine">添加机器</Button>
+              </MenuItem>
+              <MenuItem name="3">
+                <Button type="success" @click="backup">备份数据</Button>
               </MenuItem>
               <!-- 添加信息的模态框 -->
               <AddAccount :showModal.sync="showAddAccount"></AddAccount>

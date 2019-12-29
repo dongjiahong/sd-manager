@@ -2,29 +2,21 @@
   <div class="account">
     <Table
       border
+      :stripe="true"
       size="small"
       :highlight-row="true"
       :columns="account_label"
       :data="getAccountsWithState($route.params.state)"
     >
-      <template slot-scope="{ row }" slot="account_no">
+      <!-- <template slot-scope="{ row }" slot="account_no">
         <strong>{{ row.account_no }}</strong>
-      </template>
+      </template> -->
       <template slot-scope="{ row }" slot="action">
-        <Button
-          type="primary"
-          size="small"
-          style="margin-right: 5px"
-          @click="edit(row)"
-          >编辑</Button
-        >
+        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
         <Button type="error" size="small" @click="remove(row)">删除</Button>
       </template>
     </Table>
-    <EditAccount
-      :showModal.sync="showEditAccount"
-      :accountDetail="activeRow"
-    ></EditAccount>
+    <EditAccount :showModal.sync="showEditAccount" :accountDetail="activeRow"></EditAccount>
   </div>
 </template>
 
@@ -57,10 +49,17 @@ export default {
           }
         },
         {
-          title: "账号代号",
+          // title: "账号代号",
           width: 110,
-          sortable: true,
-          slot: "account_no"
+          key: "account_no",
+          // sortable: true,
+          // slot: "account_no",
+          renderHeader: (h) => {
+            return h("div", [
+              h('strong', '账户代号'),
+              h('i-input')
+            ]);
+          }
         },
         {
           title: "机器代号",
