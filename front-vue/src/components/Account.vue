@@ -1,22 +1,37 @@
 <template>
   <div class="account">
+    <Input
+      search
+      enter-button
+      placeholder="输入你要搜索的账户代号"
+      v-model="search"
+    />
     <Table
       border
       :stripe="true"
       size="small"
       :highlight-row="true"
       :columns="account_label"
-      :data="getAccountsWithState($route.params.state)"
+      :data="getAccountsWithState($route.params.state).filter(data => !search || data.account_no.includes(search))"
     >
-      <!-- <template slot-scope="{ row }" slot="account_no">
+      <template slot-scope="{ row }" slot="account_no">
         <strong>{{ row.account_no }}</strong>
-      </template> -->
+      </template>
       <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
+        <Button
+          type="primary"
+          size="small"
+          style="margin-right: 5px"
+          @click="edit(row)"
+          >编辑</Button
+        >
         <Button type="error" size="small" @click="remove(row)">删除</Button>
       </template>
     </Table>
-    <EditAccount :showModal.sync="showEditAccount" :accountDetail="activeRow"></EditAccount>
+    <EditAccount
+      :showModal.sync="showEditAccount"
+      :accountDetail="activeRow"
+    ></EditAccount>
   </div>
 </template>
 
@@ -24,7 +39,7 @@
 import EditAccount from "@/components/EditAccount";
 import ExpandRow from "@/components/AccountTableExpand";
 import util from "@/util/util";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Account",
@@ -36,6 +51,7 @@ export default {
     return {
       showEditAccount: false,
       activeRow: {},
+      search: '',
       account_label: [
         {
           type: "expand",
@@ -49,17 +65,10 @@ export default {
           }
         },
         {
-          // title: "账号代号",
+          title: "账号代号",
           width: 110,
-          key: "account_no",
-          // sortable: true,
-          // slot: "account_no",
-          renderHeader: (h) => {
-            return h("div", [
-              h('strong', '账户代号'),
-              h('i-input')
-            ]);
-          }
+          sortable: true,
+          slot: "account_no"
         },
         {
           title: "机器代号",
@@ -105,7 +114,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(["accounts"]),
     ...mapGetters(["getAccountsWithState"])
   },
   methods: {

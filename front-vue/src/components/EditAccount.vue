@@ -117,7 +117,7 @@
 
 <script>
 import util from "@/util/util";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "EditAccount",
   props: {
@@ -136,7 +136,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(["agents"]),
     ...mapGetters(["getEditMachines"])
   },
   methods: {

@@ -5,9 +5,8 @@
         <Header>
           <Menu mode="horizontal" theme="dark" active-name="1">
             <div class="layout-logo">
-              <MenuItem name="4">
-                <Input search enter-button="Search" placeholder="Enter something..." />
-                <!-- <Button type="success" @click="backup">搜索</Button> -->
+              <MenuItem name="3">
+                <Button type="success" @click="backup">备份数据</Button>
               </MenuItem>
             </div>
             <div class="layout-nav">
@@ -16,9 +15,6 @@
               </MenuItem>
               <MenuItem name="2">
                 <Button type="primary" @click="addMachine">添加机器</Button>
-              </MenuItem>
-              <MenuItem name="3">
-                <Button type="success" @click="backup">备份数据</Button>
               </MenuItem>
               <!-- 添加信息的模态框 -->
               <AddAccount :showModal.sync="showAddAccount"></AddAccount>
@@ -41,9 +37,10 @@
                 <template slot="title">
                   <Icon type="ios-analytics"></Icon>机器管理
                 </template>
-                <MenuItem name="2-1" to="/home/machines/formal">有效的机器</MenuItem>
-                <MenuItem name="2-2" to="/home/machines/useful">有效未用的机器</MenuItem>
-                <MenuItem name="2-3" to="/home/machines/expose">过期的机器</MenuItem>
+                <MenuItem name="2-1" to="/home/machines/all">所有机器</MenuItem>
+                <MenuItem name="2-2" to="/home/machines/formal">有效的机器</MenuItem>
+                <MenuItem name="2-3" to="/home/machines/useful">有效未用的机器</MenuItem>
+                <MenuItem name="2-4" to="/home/machines/expose">过期的机器</MenuItem>
               </Submenu>
               <Submenu name="3">
                 <template slot="title">

@@ -1,9 +1,15 @@
 <template>
   <div class="machine">
+    <Input
+      search
+      enter-button
+      placeholder="输入你要搜索的机器代号"
+      v-model="search"
+    />
     <Table
       border
       :columns="machine_label"
-      :data="getMachinesWithState($route.params.state)"
+      :data="getMachinesWithState($route.params.state).filter(data => !search || data.machine_no.includes(search))"
     >
       <template slot-scope="{ row }" slot="machine_no">
         <strong>{{ row.machine_no }}</strong>
@@ -39,6 +45,7 @@ export default {
     return {
       showEditMachine: false,
       activeMachine: {},
+      search: '',
       machine_label: [
         {
           title: "机器代号",

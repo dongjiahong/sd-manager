@@ -37,8 +37,10 @@ export default new Vuex.Store({
         return state.machines.filter(m => m.machine_time_left <= 0);
       } else if (info === "useful") {
         return state.machines.filter(
-          m => m.machine_time_left > 0 && m.account_no === ""
+          m => (m.machine_time_left > 0 && m.account_no === "")
         );
+      } else if (info === "all") {
+        return state.machines;
       } else {
         console.log("===> getMachinesWithState unknown state: ", info);
       }
@@ -159,14 +161,14 @@ export default new Vuex.Store({
           break;
         }
       }
-      console.log("====> delAccount item:", item)
+      console.log("====> delAccount item:", item);
       if (item.machine_no != "") {
         for (let index in state.machines) {
           if (item.machine_no == state.machines[index].machine_no) {
             let copyMachine = util.deepCopy(state.machines[index]);
             copyMachine.account_no = "";
             Vue.set(state.machines, index, copyMachine);
-            console.log("====> delAccount copy ok")
+            console.log("====> delAccount copy ok");
             break;
           }
         }
@@ -190,7 +192,7 @@ export default new Vuex.Store({
     // },
     // 修改机器
     editMachine(state, item) {
-      console.log("=====> editMachine item: ",item)
+      console.log("=====> editMachine item: ", item);
       for (let index in state.machines) {
         if (item.id == state.machines[index].id) {
           let newValue = {
