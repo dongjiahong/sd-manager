@@ -42,8 +42,8 @@ type Account struct {
 // 代理信息
 type Manager struct {
 	Id              string `json:"id"`               // 代理的id -- 自增长
-	ManagerName     string `json:"manager_name"`     // 代理的昵称： 董帅
-	ManagerAccount  string `json:"manager_account"`  // 代理的账户： dongshuai
+	ManagerName     string `json:"manager_name"`     // 代理的昵称： 凉凉
+	ManagerAccount  string `json:"manager_account"`  // 代理的账户： liangliang
 	ManagerPassword string `json:"manager_password"` // 代理的密码: 1234567
 }
 

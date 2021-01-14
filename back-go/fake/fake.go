@@ -113,20 +113,20 @@ func GetAllAgents(c *gin.Context) {
 	agents := make([]db.Agent, 0)
 	agentsStr := `[{
 		"id": "1",
-		"agent_name": "董帅",
-		"agent_account": "dongshuai",
+		"agent_name": "帅",
+		"agent_account": "shuai",
 		"agent_password": "123455"
 		},
 		{
 		"id": "2",
-		"agent_name": "董明",
-		"agent_account": "dongming",
+		"agent_name": "明",
+		"agent_account": "ming",
 		"agent_password": "123451"
 		},
 		{
 		"id": "3",
-		"agent_name": "董凤娟",
-		"agent_account": "dongfengjuan",
+		"agent_name": "凤娟",
+		"agent_account": "fengjuan",
 		"agent_password": "1234577"
 		}]`
 	if err := json.Unmarshal([]byte(agentsStr), &agents); err != nil {
@@ -228,20 +228,20 @@ func GetAllInfo(c *gin.Context) {
 		}],
 	"agents":[{
 		"id": "1",
-		"agent_name": "董帅",
-		"agent_account": "dongshuai",
+		"agent_name": "帅",
+		"agent_account": "shuai",
 		"agent_password": "123455"
 		},
 		{
 		"id": "2",
-		"agent_name": "董明",
-		"agent_account": "dongming",
+		"agent_name": "明",
+		"agent_account": "ming",
 		"agent_password": "123451"
 		},
 		{
 		"id": "3",
-		"agent_name": "董凤娟",
-		"agent_account": "dongfengjuan",
+		"agent_name": "凤娟",
+		"agent_account": "fengjuan",
 		"agent_password": "1234577"
 		}],
 	"machines":[{
